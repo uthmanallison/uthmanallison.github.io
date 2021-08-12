@@ -271,12 +271,12 @@ kbd kbd {
 }
 
 figure {
-  margin: 0 0 1rem;
+  margin: 0 0 3rem;
 }
 
 img,
 svg {
-  vertical-align: middle;
+  vertical-align: middle; 
 }
 
 table {
@@ -627,17 +627,22 @@ progress {
 
 .figure {
   display: inline-block;
+  border: 1px;
 }
 
 .figure-img {
+  vertical-align: top;
   margin-bottom: 0.5rem;
   line-height: 1;
 }
 
-.figure-caption {
+figure figcaption {
   font-size: 0.875em;
   color: #6c757d;
+  text-align: center;
+  margin: 0.5rem 0 0;
 }
+
 
 .container,
 .container-fluid,

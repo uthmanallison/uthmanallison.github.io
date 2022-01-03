@@ -93,26 +93,53 @@
                         <figcaption>Deployed web app for Toyota model classifier project. (Credit: <a href="https://uthmanallison.github.io/#about"> Abiodun Allison</a>)
                         </figcaption>
                     </figure>
+
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Melanoma Detection Using EfficientNet+BiLSTM </h3>
+                            <div class="subheading mb-4">Python, Tensorflow, Tensorflow Lite, Image clasification, Streamlit </div>
+                            <p style="text-align:justify;"> Trained and deployed an hybrid pretrained EfficientNetB6 and Bidirectional LSTM model to predict whether the lesion in given image is benign or malignant. Dataset used was obtained from The International Skin Imaging Collaboration (ISIC) 2020 Challenge <a href="https://www.kaggle.com/c/siim-isic-melanoma-classification/data" target="_blank"> dataset. </a> </p>
+                        </div> 
+                        <div class="flex-shrink-0">
+                            <span class="text-right"> August 2021  <br>
+                                <a class="button" href="https://github.com/alliwene/cancer-streamlit" target="_blank"><button> View on <i class="fab fa-github"></i></button></a> 
+                                <a class="button" href="https://share.streamlit.io/alliwene/cancer-streamlit/main/cancer-class.py" target="_blank"><button> Open <i class="iconify" data-icon="ic:twotone-web" data-inline="false"></i></button></a>
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
                             <h3 class="mb-0">Fuel Efficiency Prediction</h3>
                             <div class="subheading mb-4">Python, Data cleaning, EDA, XGBoost </div>
-                            <p style="text-align:justify;"> Implemented gradient boosting regression model and neural network to predict vehicles' miles per gallon (MPG) values, which is the primary measurement of a car's fuel efficiency. <a href="https://archive.ics.uci.edu/ml/datasets/auto+mpg" target="_blank"> Auto MPG dataset </a> was used which consists of a description of many automobiles in the late 1970s and early 1980s. </p>
-                            <!-- <a href="https://github.com/alliwene/toyota-model-classifier">Repo</a> <a href="https://share.streamlit.io/alliwene/toyota-model-classifier/main/toyota-class.py">App</a>  </p> -->
+                            <p style="text-align:justify;"> Implemented gradient boosting regression model and neural network to predict vehicles' miles per gallon (MPG) values, which is the primary measurement of a car's fuel efficiency. <a href="https://archive.ics.uci.edu/ml/datasets/auto+mpg" target="_blank"> Auto MPG dataset </a> was used which consists of a description of many automobiles in the late 1970s and early 1980s. </p>                           
                         </div> 
                         <div class="flex-shrink-0">
                             <span class="text-right"> August 2021  <br>
-                                <a class="button" href="https://github.com/alliwene/fuel-efficiency" target="_blank"><button> View on <i class="fab fa-github"></i></button></a> 
-                                <!-- <a class="button" href="https://share.streamlit.io/alliwene/toyota-model-classifier/main/toyota-class.py" target="_blank"><button> Open <i class="iconify" data-icon="ic:twotone-web" data-inline="false"></i></button></a> -->
+                                <a class="button" href="https://github.com/alliwene/fuel-efficiency" target="_blank"><button> View on <i class="fab fa-github"></i></button></a>                                 
                             </span>
                         </div>
                     </div>
+
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Stroke Prediction</h3>
+                            <div class="subheading mb-4">Python, Gradient boosting, Data storytelling, Streamlit, Heroku </div>
+                            <p style="text-align:justify;"> Explored stroke prediction <a href="https://www.kaggle.com/fedesoriano/stroke-prediction-dataset" target="_blank"> dataset </a> and implemented a regularizing gradient boosting model to predict the likelihood of a patient having a stroke or not considering input parameters like gender, age, various diseases, and smoking status. The model was deployed using Streamlit built web app deployed on Heroku. </p>
+                        </div> 
+                        <div class="flex-shrink-0">
+                            <span class="text-right"> July 2021  <br>
+                                <a class="button" href="https://github.com/alliwene/stroke-diagnosis" target="_blank"><button> View on <i class="fab fa-github"></i></button></a> 
+                                <a class="button" href="https://stroke-class.herokuapp.com" target="_blank"><button> Open <i class="iconify" data-icon="ic:twotone-web" data-inline="false"></i></button></a>
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
                             <h3 class="mb-0">Toyota Model Classifier</h3>
                             <div class="subheading mb-4">Python, Image preprocessing, Fast.ai, Streamlit </div>
-                            <p style="text-align:justify;"> Built a simple web app that classify different Toyota brands using streamlit. Images for different Toyota models were gotten using Bing search API, and cleaned. Pretrained Resnet101 model was used to solve the problem implemented using fast.ai. </p>
-                            <!-- <a href="https://github.com/alliwene/toyota-model-classifier">Repo</a> <a href="https://share.streamlit.io/alliwene/toyota-model-classifier/main/toyota-class.py">App</a>  </p> -->
+                            <p style="text-align:justify;"> Built a simple web app that classifies different Toyota brands using Streamlit. Images for different Toyota models were gotten using Bing search API. After image cleaning and pre-processing, a pre-trained Resnet101 model was implemented classify the images using FastAI. </p>
                         </div> 
                         <div class="flex-shrink-0">
                             <span class="text-right"> Febuary 2021  <br>
@@ -121,6 +148,7 @@
                             </span>
                         </div>
                     </div>
+
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
                             <h3 class="mb-0">Analysis and Prediction of Health Insurance Subscription in Nigeria</h3>
@@ -135,20 +163,18 @@
                             </span>
                         </div>
                     </div>
-                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                    <!-- <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
                             <h3 class="mb-0">Loan default prediction</h3>
                             <div class="subheading mb-3">Python, Data cleaning, EDA, Models Ensembling</div>
                             <p style="text-align:justify;">  My submission for Data Science Nigeria 2020 AI bootcamp hackathon hosted on <a href="https://zindi.africa/hackathons/dsn-ai-bootcamp-qualification-hackathon" target="_blank"> Zindi</a>. Hackathon objective was to develop a machine learning algorithm that determines whether a retail company customer would default on a loan or not. </p>
-                            <!-- <a href="https://gb-health-insurance.herokuapp.com/">App</a></p> --> 
                         </div>
                         <div class="flex-shrink-0">
                             <span class="text-right"> September 2020  <br>
                                 <a class="button" href="https://github.com/alliwene/dsn-bootcamp-20-loan-default" target="_blank"><button> View on <i class="fab fa-github"></i></button></a> 
-                                <!-- <a class="button" href="https://gb-health-insurance.herokuapp.com/" target="_blank"><button> Open <i class="iconify" data-icon="ic:twotone-web" data-inline="false"></i></button></a> -->
                             </span>
                         </div>
-                    </div> 
+                    </div>  -->
                 </div>
             </section>
             <hr class="m-0" />

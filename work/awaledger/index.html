@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How AwaLedger separates transactional finance operations from AI processing with an outbox, Pub/Sub, duplicate locks, and idempotent webhooks.">
+  <meta name="theme-color" content="#07111B">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="AwaLedger Backend &amp; AI System Case Study | Uthman Allison">
+  <meta property="og:description" content="A transactional FastAPI backend and resilient Gemini worker connected by durable delivery contracts.">
+  <meta property="og:url" content="https://uthmanallison.com/work/awaledger/">
+  <meta property="og:image" content="https://uthmanallison.com/assets/img/social-card.png">
+  <meta property="og:image:alt" content="Abiodun Uthman Allison, backend and AI engineer">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AwaLedger Backend &amp; AI System Case Study | Uthman Allison">
+  <meta name="twitter:description" content="Transactional finance operations separated from resilient AI processing.">
+  <meta name="twitter:image" content="https://uthmanallison.com/assets/img/social-card.png">
+  <link rel="canonical" href="https://uthmanallison.com/work/awaledger/">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="icon" href="/assets/img/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script defer src="/js/analytics.js"></script>
+  <title>AwaLedger Backend &amp; AI System Case Study | Uthman Allison</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="header-inner"><a class="wordmark" href="/">Uthman Allison</a><nav aria-label="Primary navigation"><a href="/#work">Work</a><a href="/#contact">Contact</a></nav></div></header>
+  <main id="main">
+    <header class="case-hero shell">
+      <a class="back-link" href="/#work">Back to selected work</a>
+      <h1>AwaLedger</h1>
+      <p class="lead">A financial backend and detached AI worker designed as one distributed system, with durable state before delivery and idempotency at every retry boundary.</p>
+      <div class="case-meta"><span>FastAPI</span><span>PostgreSQL</span><span>GCP Pub/Sub</span><span>Redis</span><span>Gemini</span></div>
+    </header>
+    <div class="case-body">
+      <section class="case-section" aria-labelledby="awa-problem">
+        <h2 id="awa-problem">The boundary</h2>
+        <div class="case-content"><p>Financial document processing and model-assisted classification are slower and less predictable than transactional API work. Running them inside the request path would couple user-facing reliability to a broker, model provider, and callback network.</p><p>The system instead commits business state and an outbox event together, then lets a detached worker perform AI processing and report typed results through a secured callback.</p></div>
+      </section>
+      <section class="case-section" aria-labelledby="awa-map">
+        <h2 id="awa-map">System map</h2>
+        <div class="case-content">
+          <p>Four boundaries have distinct failure behavior: the database transaction, message delivery, AI work, and result callback.</p>
+          <div class="system-map" role="img" aria-label="A document request reaches the FastAPI backend, which commits financial state and an outbox event in PostgreSQL. A dispatcher publishes to Pub/Sub. The worker acquires a Redis lock, obtains typed Gemini results, and posts a secure idempotent webhook back to the API.">
+            <div class="map-row" style="--map-columns:5">
+              <div class="map-node"><strong>Client document</strong><span>Authenticated request</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>FastAPI backend</strong><span>Domain and use cases</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>PostgreSQL</strong><span>State + outbox atomically</span></div>
+            </div>
+            <div class="map-row" style="--map-columns:7">
+              <div class="map-node"><strong>Outbox dispatcher</strong><span>Claim, publish, retry</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>Pub/Sub</strong><span>At-least-once delivery</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>Worker + Redis</strong><span>Validate and lock</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>Gemini</strong><span>Typed classification</span></div>
+            </div>
+            <div class="map-row" style="--map-columns:3">
+              <div class="map-node"><strong>Secure webhook</strong><span>Bounded retry + idempotency key</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>Persisted insight</strong><span>Backend owns final state</span></div>
+            </div>
+            <p class="map-note">The worker acknowledges only after the result is safely accepted or the failure is classified as permanent. Retryable failures are negatively acknowledged.</p>
+          </div>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="awa-decisions">
+        <h2 id="awa-decisions">Reliability decisions</h2>
+        <div class="case-content">
+          <ol class="decision-list">
+            <li><strong>Use a transactional outbox.</strong> Financial state and the event announcing it commit together. Publishing can retry independently without inventing state.</li>
+            <li><strong>Classify delivery failures.</strong> The worker distinguishes malformed or permanent input from transient model, network, and callback failures before choosing ack or nack.</li>
+            <li><strong>Lock by event identity.</strong> A Redis lock suppresses concurrent duplicate work when Pub/Sub redelivers the same event.</li>
+            <li><strong>Require typed model output.</strong> Pydantic contracts keep classification and business-insight payloads bounded before they cross the callback boundary.</li>
+            <li><strong>Make callbacks idempotent and authenticated.</strong> Stable event identity prevents repeated callbacks from duplicating stored results; secrets and sample financial data never enter logs or public examples.</li>
+          </ol>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="awa-outcomes">
+        <h2 id="awa-outcomes">Engineering outcomes</h2>
+        <div class="case-content outcomes">
+          <article><h3>Fast request path</h3><p>User-facing transactions do not wait for model processing or callback delivery.</p></article>
+          <article><h3>Durable handoff</h3><p>An event cannot exist without its committed source state, and unpublished outbox rows remain retryable.</p></article>
+          <article><h3>Duplicate resistance</h3><p>Redis locks and callback idempotency defend both sides of at-least-once delivery.</p></article>
+          <article><h3>Replaceable intelligence</h3><p>The worker owns model integration while the backend owns financial truth and result acceptance.</p></article>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer shell"><p>© 2026 Abiodun Uthman Allison</p><a href="/privacy/">Privacy &amp; analytics</a></footer>
+  <aside class="consent-banner" data-consent-banner hidden aria-labelledby="consent-title"><div><h2 id="consent-title">Optional analytics</h2><p>I use Google Analytics to understand page views and portfolio-link clicks. No analytics loads unless you accept. <a href="/privacy/">Details</a></p></div><div class="consent-actions"><button type="button" data-consent="declined">Decline</button><button type="button" class="button-primary" data-consent="accepted">Accept</button></div><p class="sr-only" aria-live="polite" data-consent-status></p></aside>
+</body>
+</html>

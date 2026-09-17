@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How an EfficientNetB6 and BiLSTM melanoma-classification model became an interactive Streamlit research prototype using TensorFlow Lite.">
+  <meta name="theme-color" content="#000000">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Melanoma Detection Machine Learning Case Study | Uthman Allison">
+  <meta property="og:description" content="From ISIC lesion images and model training to a portable TensorFlow Lite inference workflow in Streamlit.">
+  <meta property="og:url" content="https://uthmanallison.com/work/melanoma-detection/">
+  <meta property="og:image" content="https://uthmanallison.com/assets/img/social-card.png">
+  <meta property="og:image:alt" content="Abiodun Uthman Allison, backend and AI engineer">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Melanoma Detection Machine Learning Case Study | Uthman Allison">
+  <meta name="twitter:description" content="An EfficientNetB6 and BiLSTM research prototype deployed with Streamlit and TensorFlow Lite.">
+  <meta name="twitter:image" content="https://uthmanallison.com/assets/img/social-card.png">
+  <link rel="canonical" href="https://uthmanallison.com/work/melanoma-detection/">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="icon" href="/assets/img/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script defer src="/js/analytics.js"></script>
+  <title>Melanoma Detection Machine Learning Case Study | Uthman Allison</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="/">Uthman Allison</a>
+      <nav aria-label="Primary navigation"><a href="/#work">Work</a><a href="/#contact">Contact</a></nav>
+    </div>
+  </header>
+  <main id="main">
+    <header class="case-hero shell">
+      <a class="back-link" href="/#work">Back to selected work</a>
+      <h1>Melanoma Detection</h1>
+      <p class="lead">A research prototype that carries a lesion-image classifier from model training to a simple, portable inference experience.</p>
+      <div class="case-meta"><span>EfficientNetB6</span><span>BiLSTM</span><span>TensorFlow Lite</span><span>Streamlit</span><span>ISIC 2020</span></div>
+      <div class="actions case-actions">
+        <a class="button button-primary" href="https://github.com/alliwene/cancer-streamlit" rel="noreferrer" data-analytics-event="project_open" data-analytics-label="melanoma_github">View source on GitHub</a>
+      </div>
+    </header>
+    <div class="case-body">
+      <section class="case-section" aria-labelledby="melanoma-problem">
+        <h2 id="melanoma-problem">The use case</h2>
+        <div class="case-content">
+          <p>Image classifiers are difficult to assess outside a notebook. This project turns the trained model into an interactive workflow where a user can upload a lesion image, preview it, and request a benign-or-malignant classification.</p>
+          <p>The work uses lesion images from the International Skin Imaging Collaboration 2020 challenge. It is a machine-learning research demonstration, not a clinical diagnostic tool.</p>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="melanoma-flow">
+        <h2 id="melanoma-flow">Inference flow</h2>
+        <div class="case-content">
+          <p>The Streamlit application keeps the inference path explicit and reproducible from upload to result.</p>
+          <div class="system-map" role="img" aria-label="A user uploads a lesion image. The application resizes it to 512 by 512 pixels, scales pixel values, creates a batch tensor, runs the TensorFlow Lite model, then returns a benign or malignant research classification.">
+            <div class="map-row" style="--map-columns:7">
+              <div class="map-node"><strong>Upload</strong><span>PNG, JPG, or JPEG</span></div>
+              <div class="map-arrow" aria-hidden="true"></div>
+              <div class="map-node"><strong>Prepare</strong><span>512×512 · scale 0–1</span></div>
+              <div class="map-arrow" aria-hidden="true"></div>
+              <div class="map-node"><strong>Infer</strong><span>TensorFlow Lite model</span></div>
+              <div class="map-arrow" aria-hidden="true"></div>
+              <div class="map-node"><strong>Classify</strong><span>Benign or malignant</span></div>
+            </div>
+            <p class="map-note">The repository’s application uses a 0.5 output threshold and displays the classification only after the user selects “Classify.”</p>
+          </div>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="melanoma-decisions">
+        <h2 id="melanoma-decisions">Implementation decisions</h2>
+        <div class="case-content">
+          <ol class="decision-list">
+            <li><strong>Start with transfer learning.</strong> A pretrained EfficientNetB6 extracts visual features, while a bidirectional LSTM forms the hybrid classification model documented in the project.</li>
+            <li><strong>Make deployment portable.</strong> The trained Keras model is converted into a single <code>hybrid.tflite</code> artifact consumed directly by the application.</li>
+            <li><strong>Keep preprocessing consistent.</strong> Every uploaded image follows the same resize, array conversion, pixel normalization, and batch-expansion sequence used by inference.</li>
+            <li><strong>Expose the model through a narrow interface.</strong> Streamlit handles upload, preview, and the explicit classify action without requiring a separate frontend or API.</li>
+          </ol>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="melanoma-outcomes">
+        <h2 id="melanoma-outcomes">Engineering outcomes</h2>
+        <div class="case-content outcomes">
+          <article><h3>End-to-end delivery</h3><p>The repository connects exploration, training references, model conversion, and a usable inference interface.</p></article>
+          <article><h3>Portable inference</h3><p>TensorFlow Lite packages the trained model as one deployment artifact for the Streamlit application.</p></article>
+          <article><h3>Traceable preprocessing</h3><p>The image transformation pipeline is visible in source rather than hidden behind an external service.</p></article>
+          <article><h3>Responsible scope</h3><p>The result is presented as a research classification workflow, not as medical advice or clinical diagnosis.</p></article>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer shell"><p>© 2026 Abiodun Uthman Allison</p><a href="/privacy/">Privacy &amp; analytics</a></footer>
+  <aside class="consent-banner" data-consent-banner hidden aria-labelledby="consent-title"><div><h2 id="consent-title">Optional analytics</h2><p>I use Google Analytics to understand page views and portfolio-link clicks. No analytics loads unless you accept. <a href="/privacy/">Details</a></p></div><div class="consent-actions"><button type="button" data-consent="declined">Decline</button><button type="button" class="button-primary" data-consent="accepted">Accept</button></div><p class="sr-only" aria-live="polite" data-consent-status></p></aside>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How a multi-user FastAPI and LangGraph job-search system controls LLM cost, isolates failures, preserves history, and prevents duplicate notifications.">
+  <meta name="theme-color" content="#07111B">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Job Search Agent Engineering Case Study | Uthman Allison">
+  <meta property="og:description" content="A production-oriented job intelligence pipeline with deterministic filters, explainable scoring, schedules, and idempotent delivery.">
+  <meta property="og:url" content="https://uthmanallison.com/work/job-search-agent/">
+  <meta property="og:image" content="https://uthmanallison.com/assets/img/social-card.png">
+  <meta property="og:image:alt" content="Abiodun Uthman Allison, backend and AI engineer">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Job Search Agent Engineering Case Study | Uthman Allison">
+  <meta name="twitter:description" content="Reliable multi-user job intelligence from provider search to idempotent email delivery.">
+  <meta name="twitter:image" content="https://uthmanallison.com/assets/img/social-card.png">
+  <link rel="canonical" href="https://uthmanallison.com/work/job-search-agent/">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="icon" href="/assets/img/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script defer src="/js/analytics.js"></script>
+  <title>Job Search Agent Engineering Case Study | Uthman Allison</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="/">Uthman Allison</a>
+      <nav aria-label="Primary navigation"><a href="/#work">Work</a><a href="/#contact">Contact</a></nav>
+    </div>
+  </header>
+  <main id="main">
+    <header class="case-hero shell">
+      <a class="back-link" href="/#work">Back to selected work</a>
+      <h1>Job Search Agent</h1>
+      <p class="lead">A multi-user job intelligence and notification system that makes expensive model work the last step—not the first—and keeps every decision explainable.</p>
+      <div class="case-meta"><span>FastAPI</span><span>LangGraph</span><span>PostgreSQL</span><span>OpenAI</span><span>Auth0</span></div>
+    </header>
+    <div class="case-body">
+      <section class="case-section" aria-labelledby="job-problem">
+        <h2 id="job-problem">The problem</h2>
+        <div class="case-content">
+          <p>Job listings arrive from providers with different fields, weak location evidence, duplicate postings, and descriptions that are expensive to evaluate semantically. Multi-user schedules add ownership, retry, and privacy boundaries.</p>
+          <p>The design needed to personalize discovery without multiplying API or LLM calls, retain the evidence behind each recommendation, and avoid duplicate emails when scheduled work retries.</p>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="job-architecture">
+        <h2 id="job-architecture">Graph workflow</h2>
+        <div class="case-content case-content-wide">
+          <p>Manual and scheduled runs enter the same compiled LangGraph. Each stage advances only when its artifacts are complete; otherwise the router records what it can and closes the run safely.</p>
+          <div class="workflow-graph" aria-label="The verified LangGraph workflow from start through profile loading, query generation, search, normalization, deduplication, filtering, scoring, ranking, persistence, notification, finalization, and end. Branch notes show the alternate route selected when a decision fails or produces no selected jobs.">
+            <div class="workflow-terminal">START</div>
+            <div class="workflow-stage">
+              <p class="workflow-stage-label">01 · Prepare</p>
+              <div class="workflow-track workflow-track-two">
+                <article class="workflow-node"><span>load_profile</span><strong>Load profile</strong><p>Resolve the owning profile version.</p></article>
+                <div class="workflow-edge"><span>profile ready</span></div>
+                <article class="workflow-node"><span>generate_queries</span><strong>Generate queries</strong><p>Build bounded role and location searches.</p></article>
+              </div>
+              <ul class="workflow-branches">
+                <li><span>Profile error</span><strong>Finalize</strong></li>
+                <li><span>Query-planning error</span><strong>Persist failed run</strong></li>
+              </ul>
+            </div>
+            <div class="workflow-stage-connector" aria-hidden="true"></div>
+            <div class="workflow-stage">
+              <p class="workflow-stage-label">02 · Discover</p>
+              <div class="workflow-track workflow-track-three">
+                <article class="workflow-node"><span>search</span><strong>Search</strong><p>Execute bounded provider runs.</p></article>
+                <div class="workflow-edge"><span>results</span></div>
+                <article class="workflow-node"><span>normalize</span><strong>Normalize</strong><p>Build canonical job artifacts.</p></article>
+                <div class="workflow-edge"><span>complete</span></div>
+                <article class="workflow-node"><span>deduplicate</span><strong>Deduplicate</strong><p>Resolve stable job identity.</p></article>
+              </div>
+              <ul class="workflow-branches">
+                <li><span>All providers failed</span><strong>Normalize failure evidence</strong></li>
+                <li><span>Incomplete search, normalization, or identity</span><strong>Finalize</strong></li>
+              </ul>
+            </div>
+            <div class="workflow-stage-connector" aria-hidden="true"></div>
+            <div class="workflow-stage">
+              <p class="workflow-stage-label">03 · Evaluate</p>
+              <div class="workflow-track workflow-track-three">
+                <article class="workflow-node"><span>filter</span><strong>Hard filter</strong><p>Apply deterministic eligibility rules.</p></article>
+                <div class="workflow-edge"><span>eligible jobs</span></div>
+                <article class="workflow-node"><span>score</span><strong>Score</strong><p>Run isolated semantic evaluation.</p></article>
+                <div class="workflow-edge"><span>scored jobs</span></div>
+                <article class="workflow-node"><span>rank_select</span><strong>Rank &amp; select</strong><p>Apply threshold and result limit.</p></article>
+              </div>
+              <ul class="workflow-branches">
+                <li><span>Incomplete filter, score, or ranking artifacts</span><strong>Finalize</strong></li>
+              </ul>
+            </div>
+            <div class="workflow-stage-connector" aria-hidden="true"></div>
+            <div class="workflow-stage">
+              <p class="workflow-stage-label">04 · Deliver</p>
+              <div class="workflow-track workflow-track-two">
+                <article class="workflow-node"><span>persist</span><strong>Persist</strong><p>Commit history before effects.</p></article>
+                <div class="workflow-edge"><span>persisted</span></div>
+                <article class="workflow-node workflow-decision"><span>decision</span><strong>Selected jobs?</strong><p>Choose the notification path.</p></article>
+              </div>
+              <ul class="workflow-branches">
+                <li><span>Not persisted or no selected jobs</span><strong>Finalize without notification</strong></li>
+              </ul>
+              <div class="workflow-stage-connector workflow-stage-connector-labeled" aria-hidden="true"><span>selected jobs</span></div>
+              <div class="workflow-track workflow-track-two">
+                <article class="workflow-node"><span>notify</span><strong>Notify</strong><p>Send an idempotent digest.</p></article>
+                <div class="workflow-edge"><span>always</span></div>
+                <article class="workflow-node"><span>finalize</span><strong>Finalize</strong><p>Close the run and status.</p></article>
+              </div>
+            </div>
+            <div class="workflow-stage-connector" aria-hidden="true"></div>
+            <div class="workflow-terminal">END</div>
+            <p class="map-note">One correlation ID connects the database run, logs, notification intent, and privacy-projected LangSmith trace.</p>
+          </div>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="job-decisions">
+        <h2 id="job-decisions">Production decisions</h2>
+        <div class="case-content">
+          <ol class="decision-list">
+            <li><strong>Filter before scoring.</strong> Definite age, location, authorization, title, and salary mismatches are rejected before they can spend an LLM request.</li>
+            <li><strong>Keep graph state small.</strong> Full profiles, jobs, and evaluations live in run-scoped artifacts; the LangGraph state contains identifiers, routing status, timestamps, and warnings.</li>
+            <li><strong>Correlate without leaking content.</strong> The search-run ID is reused across PostgreSQL, logs, notifications, and traces. Trace exports allow IDs, versions, counts, and usage—not résumé text or job descriptions.</li>
+            <li><strong>Persist before sending.</strong> Notification intent is committed before Resend is called. A stable idempotency key and database claim prevent retry-driven duplicate delivery.</li>
+          </ol>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="job-outcomes">
+        <h2 id="job-outcomes">Engineering outcomes</h2>
+        <div class="case-content outcomes">
+          <article><h3>Failure isolation</h3><p>One provider or per-job scoring failure can produce a useful partial result without erasing completed work.</p></article>
+          <article><h3>Bounded cost</h3><p>Query, result, concurrency, token, call, and estimated-cost ceilings constrain each run.</p></article>
+          <article><h3>Explainable history</h3><p>Immutable observations and evaluation versions preserve what was seen and why a job ranked.</p></article>
+          <article><h3>Shared execution path</h3><p>Manual and scheduled runs use the same graph, persistence, tracing, and notification boundaries.</p></article>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer shell"><p>© 2026 Abiodun Uthman Allison</p><a href="/privacy/">Privacy &amp; analytics</a></footer>
+  <aside class="consent-banner" data-consent-banner hidden aria-labelledby="consent-title"><div><h2 id="consent-title">Optional analytics</h2><p>I use Google Analytics to understand page views and portfolio-link clicks. No analytics loads unless you accept. <a href="/privacy/">Details</a></p></div><div class="consent-actions"><button type="button" data-consent="declined">Decline</button><button type="button" class="button-primary" data-consent="accepted">Accept</button></div><p class="sr-only" aria-live="polite" data-consent-status></p></aside>
+</body>
+</html>

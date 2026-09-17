@@ -1,0 +1,122 @@
+<DesignBoard title="Portfolio redesign — responsive direction" version={2}>
+<Section id="responsive-home" title="Home page direction">
+<Artboard id="desktop-home" label="Desktop — systems casebook" surface="browser">
+<Screen surface="browser" html={`
+<div style="display:flex;flex-direction:column;gap:14px;padding:16px;height:100%;box-sizing:border-box">
+  <header style="display:flex;align-items:center;width:100%;gap:18px;padding-bottom:10px;border-bottom:1.4px solid var(--wf-line);white-space:nowrap">
+    <strong>Uthman Allison</strong>
+    <div style="flex:1"></div>
+    <a href="#work">Work</a>
+    <a href="#experience">Experience</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </header>
+  <main style="display:flex;flex-direction:column;gap:16px;min-width:0;flex:1">
+    <section style="display:grid;grid-template-columns:1.45fr .75fr;gap:16px;align-items:stretch">
+      <div style="display:flex;flex-direction:column;gap:9px;justify-content:center;min-width:0">
+        <h1>Backend engineer designing reliable systems for AI, finance, and offline learning.</h1>
+        <p class="wf-muted">I build APIs, asynchronous pipelines, and AI-assisted products that stay correct under retries, weak networks, and real-world constraints.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a data-primary href="#work">View selected work</a>
+          <a href="mailto:allisonabiodun@gmail.com">Email me</a>
+        </div>
+      </div>
+      <aside class="wf-card" style="display:flex;flex-direction:column;gap:8px;justify-content:center">
+        <strong>Systems I work across</strong>
+        <span class="wf-pill">Python + TypeScript</span>
+        <span class="wf-pill">FastAPI + NestJS</span>
+        <span class="wf-pill">PostgreSQL + Redis</span>
+        <span class="wf-pill accent">AI pipelines + distributed jobs</span>
+      </aside>
+    </section>
+    <section id="work" style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:baseline;gap:12px"><h2>Selected work</h2><small>Three case studies · four repositories</small></div>
+      <article class="wf-card" style="display:grid;grid-template-columns:1fr 2fr auto;gap:14px;align-items:center">
+        <strong>Job Search Agent</strong>
+        <span>Multi-user job intelligence with deterministic filtering, LLM scoring, schedules, and idempotent email delivery.</span>
+        <a href="#">Read case study</a>
+      </article>
+      <article class="wf-card" style="display:grid;grid-template-columns:1fr 2fr auto;gap:14px;align-items:center">
+        <strong>Offline Literacy Platform</strong>
+        <span>Versioned content manifests and conflict-safe progress synchronization for learners on unreliable networks.</span>
+        <a href="#">Read case study</a>
+      </article>
+      <article class="wf-card" style="display:grid;grid-template-columns:1fr 2fr auto;gap:14px;align-items:center">
+        <strong>AwaLedger</strong>
+        <span>FastAPI financial backend plus a detached Gemini worker connected through Pub/Sub and secure idempotent webhooks.</span>
+        <a href="#">Read case study</a>
+      </article>
+    </section>
+  </main>
+  <footer style="display:flex;align-items:center;width:100%;gap:12px;padding-top:10px;border-top:1.4px solid var(--wf-line);white-space:nowrap">
+    <small>Available for backend and applied AI engineering roles</small>
+    <div style="flex:1"></div>
+    <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#">Résumé</a>
+  </footer>
+</div>
+`} />
+</Artboard>
+
+<Artboard id="mobile-home" label="Mobile — same story, linear reading order" surface="mobile">
+<Screen surface="mobile" html={`
+<div style="display:flex;flex-direction:column;gap:12px;padding:16px;height:100%;box-sizing:border-box">
+  <header style="display:flex;align-items:center;width:100%;gap:10px;padding-bottom:9px;border-bottom:1.4px solid var(--wf-line);white-space:nowrap;overflow:hidden">
+    <strong>Uthman Allison</strong>
+    <div style="flex:1"></div>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </header>
+  <main style="display:flex;flex-direction:column;gap:13px;min-width:0;flex:1">
+    <section style="display:flex;flex-direction:column;gap:8px">
+      <h1>Reliable backend systems for AI, finance, and offline learning.</h1>
+      <p class="wf-muted">APIs, asynchronous pipelines, and AI-assisted products built for real-world constraints.</p>
+      <a data-primary href="#work">View selected work</a>
+    </section>
+    <section id="work" style="display:flex;flex-direction:column;gap:8px">
+      <h2>Selected work</h2>
+      <article class="wf-card" style="display:flex;flex-direction:column;gap:5px">
+        <strong>Job Search Agent</strong>
+        <small>LangGraph · FastAPI · PostgreSQL</small>
+        <span>Personalized discovery, scoring, schedules, and email delivery.</span>
+        <a href="#">Read case study</a>
+      </article>
+      <article class="wf-card" style="display:flex;flex-direction:column;gap:5px">
+        <strong>Offline Literacy Platform</strong>
+        <small>NestJS · Redis · PostgreSQL</small>
+        <span>Conflict-safe content and learner-progress sync.</span>
+        <a href="#">Read case study</a>
+      </article>
+      <article class="wf-card" style="display:flex;flex-direction:column;gap:5px">
+        <strong>AwaLedger</strong>
+        <small>FastAPI · Pub/Sub · Gemini</small>
+        <span>Transactional financial API and resilient AI worker.</span>
+        <a href="#">Read case study</a>
+      </article>
+    </section>
+  </main>
+  <footer style="display:flex;align-items:center;width:100%;gap:10px;padding-top:9px;border-top:1.4px solid var(--wf-line);white-space:nowrap">
+    <a href="mailto:allisonabiodun@gmail.com">Email</a><a href="#">LinkedIn</a><a href="#">Résumé</a>
+  </footer>
+</div>
+`} />
+</Artboard>
+</Section>
+
+<Annotation id="desktop-note" title="One memorable idea: a systems casebook" targetId="desktop-home" placement="bottom">
+
+The layout reads like an engineer's field notebook: restrained grid lines, full-width project records, and architecture-led evidence rather than identical SaaS cards.
+
+</Annotation>
+
+<Annotation id="dark-note" title="Dark-only launch" targetId="desktop-home" placement="right">
+
+The production site uses a fixed midnight-blue and warm-brass palette with `color-scheme: dark`. There is no theme toggle in the first release.
+
+</Annotation>
+
+<Annotation id="mobile-note" title="Responsive behavior" targetId="mobile-home" placement="bottom">
+
+Navigation reduces to two priority links, the hero becomes one column, and project records stack without hiding content or requiring a menu script.
+
+</Annotation>
+</DesignBoard>

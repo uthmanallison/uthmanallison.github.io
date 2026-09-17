@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How AI-4AI's NestJS backend synchronizes versioned learning content and learner progress safely across retries, devices, and unreliable networks.">
+  <meta name="theme-color" content="#07111B">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Offline Literacy Backend Case Study | Uthman Allison">
+  <meta property="og:description" content="Conflict-safe content and progress synchronization for learners on unreliable networks.">
+  <meta property="og:url" content="https://uthmanallison.com/work/offline-literacy-platform/">
+  <meta property="og:image" content="https://uthmanallison.com/assets/img/social-card.png">
+  <meta property="og:image:alt" content="Abiodun Uthman Allison, backend and AI engineer">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Offline Literacy Backend Case Study | Uthman Allison">
+  <meta name="twitter:description" content="Conflict-safe content and progress synchronization for unreliable networks.">
+  <meta name="twitter:image" content="https://uthmanallison.com/assets/img/social-card.png">
+  <link rel="canonical" href="https://uthmanallison.com/work/offline-literacy-platform/">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+  <link rel="icon" href="/assets/img/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script defer src="/js/analytics.js"></script>
+  <title>Offline Literacy Backend Case Study | Uthman Allison</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="header-inner"><a class="wordmark" href="/">Uthman Allison</a><nav aria-label="Primary navigation"><a href="/#work">Work</a><a href="/#contact">Contact</a></nav></div></header>
+  <main id="main">
+    <header class="case-hero shell">
+      <a class="back-link" href="/#work">Back to selected work</a>
+      <h1>Offline Literacy Platform</h1>
+      <p class="lead">A backend for AI-4AI’s learning app that separates published-content delivery from learner-state reconciliation so both remain correct offline.</p>
+      <div class="case-meta"><span>NestJS</span><span>TypeScript</span><span>PostgreSQL</span><span>Redis</span><span>Firebase</span></div>
+    </header>
+    <div class="case-body">
+      <section class="case-section" aria-labelledby="literacy-problem">
+        <h2 id="literacy-problem">The connectivity problem</h2>
+        <div class="case-content">
+          <p>Learners need lessons and assessments when no network is available, and their progress must survive app restarts and later retries. Meanwhile, administrators can publish, update, or delete content while a device is offline.</p>
+          <p>One generic “sync” cursor cannot safely represent both concerns. Published content changes by version; learner state changes by server update time and carries different conflict rules.</p>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="literacy-map">
+        <h2 id="literacy-map">Two synchronization lanes</h2>
+        <div class="case-content">
+          <p>The client follows two explicit protocols. Content synchronization distributes immutable published snapshots and deltas. Progress synchronization replays durable client events before pulling authoritative state.</p>
+          <div class="system-map" role="img" aria-label="Content lane: client version requests a manifest, downloads verified assets, and advances its content version. Progress lane: the client pushes idempotent outbox events, the server merges them, then the client pulls authoritative learner state by update cursor.">
+            <p class="map-note"><strong>Content cursor:</strong> a published content version. It never represents learner progress.</p>
+            <div class="map-row" style="--map-columns:5">
+              <div class="map-node"><strong>Device version</strong><span>Last complete content state</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>Manifest</strong><span>Full or delta + tombstones</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>Verified assets</strong><span>Checksum before activation</span></div>
+            </div>
+            <p class="map-note"><strong>Learner cursor:</strong> the server’s update position for user-owned progress. It never represents content publication.</p>
+            <div class="map-row" style="--map-columns:5">
+              <div class="map-node"><strong>Progress outbox</strong><span>Stable event IDs</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>Idempotent push</strong><span>Merge and acknowledge</span></div>
+              <div class="map-arrow" aria-hidden="true">→</div>
+              <div class="map-node"><strong>Authoritative pull</strong><span>Changes after cursor</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="literacy-decisions">
+        <h2 id="literacy-decisions">Correctness rules</h2>
+        <div class="case-content">
+          <ol class="decision-list">
+            <li><strong>Stable identities outlive versions.</strong> Lessons and assessments keep stable IDs while publication versions describe a particular released state.</li>
+            <li><strong>Deletion is explicit.</strong> Delta manifests carry tombstones, so an offline device can remove content that vanished while it was disconnected.</li>
+            <li><strong>Downloads activate only after verification.</strong> Signed asset URLs and checksums let the client stage a complete version before switching to it.</li>
+            <li><strong>Progress events are replay-safe.</strong> Client outbox event IDs make retrying a push idempotent; acknowledged events can be removed locally.</li>
+            <li><strong>Push precedes pull.</strong> The client first delivers local work, then retrieves authoritative state. Completion is monotonic while other conflicts resolve to server truth.</li>
+          </ol>
+        </div>
+      </section>
+      <section class="case-section" aria-labelledby="literacy-outcomes">
+        <h2 id="literacy-outcomes">Engineering outcomes</h2>
+        <div class="case-content outcomes">
+          <article><h3>Retry safety</h3><p>Repeated content requests and progress pushes converge instead of duplicating learner actions.</p></article>
+          <article><h3>Bounded transfers</h3><p>Delta manifests send only changed records and explicit deletions when the client has a known version.</p></article>
+          <article><h3>Consistent activation</h3><p>A device switches content versions only after required records and assets verify successfully.</p></article>
+          <article><h3>Clear ownership</h3><p>The server owns published content and authoritative progress; the device owns its durable unsent outbox.</p></article>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer shell"><p>© 2026 Abiodun Uthman Allison</p><a href="/privacy/">Privacy &amp; analytics</a></footer>
+  <aside class="consent-banner" data-consent-banner hidden aria-labelledby="consent-title"><div><h2 id="consent-title">Optional analytics</h2><p>I use Google Analytics to understand page views and portfolio-link clicks. No analytics loads unless you accept. <a href="/privacy/">Details</a></p></div><div class="consent-actions"><button type="button" data-consent="declined">Decline</button><button type="button" class="button-primary" data-consent="accepted">Accept</button></div><p class="sr-only" aria-live="polite" data-consent-status></p></aside>
+</body>
+</html>

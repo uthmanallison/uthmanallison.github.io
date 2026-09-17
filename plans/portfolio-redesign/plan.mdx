@@ -1,0 +1,325 @@
+---
+title: "Portfolio redesign implementation plan"
+brief: "Dark-first static GitHub Pages portfolio using three evidence-backed case studies from four local repositories, with SEO, analytics, custom domain, accessibility, and responsive verification."
+kind: "plan"
+localOnly: true
+---
+
+<RichText id="overview">
+
+# Portfolio Redesign Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: use `superpowers:executing-plans` to implement this plan task-by-task. Use `superpowers:subagent-driven-development` only if the user explicitly requests delegated execution.
+
+**Goal:** Replace the current résumé-style single page with a fast, responsive, dark-only engineering portfolio that presents three evidence-backed case studies, records useful analytics, resolves at `uthmanallison.com`, and gives search engines complete crawl and identity signals.
+
+**Architecture:** Keep GitHub Pages and ship plain, semantic HTML plus one shared CSS file and one small analytics/consent script. The home page is the concise hiring surface; three static case-study routes carry the depth needed by recruiters and search engines. AwaLedger's backend and financial-insights worker are one system story because their Pub/Sub and webhook contracts make sense together.
+
+**Tech stack:** HTML5, CSS Grid/Flexbox, minimal browser JavaScript, GitHub Pages, GA4, Google Search Console, DNS. No React, bundler, package manager, template engine, database, or paid service.
+
+**Spec:** `plans/portfolio-redesign/plan.mdx` — design decisions and implementation steps are colocated so there is one source of truth.
+
+## Global constraints
+
+- The production experience is dark mode only and declares `color-scheme: dark`; no theme toggle ships.
+- Preserve GitHub Pages deployment from the repository root on `main`.
+- Use **Abiodun Uthman Allison** as the canonical identity in page titles, structured data, the social card, and Search Console. Compact navigation may use the preferred display name **Uthman Allison**.
+- Publicly identify AwaLedger and AI-4AI by their product and organization names. Use only repository-backed technical claims plus the confirmed employment dates; do not infer team, scale, or business impact.
+- Do not expose secrets, private source excerpts, customer data, internal URLs, or screenshots that are not approved for public use.
+- Meet WCAG 2.2 AA for contrast, keyboard operation, focus visibility, semantic structure, and reduced motion.
+- Keep pages useful without JavaScript; analytics and consent are progressive enhancement.
+- Every page gets a unique title, description, canonical URL, one `h1`, social metadata, and a path in `sitemap.xml`.
+- Avoid external UI/icon libraries and new build dependencies. Reuse the current portrait, résumé PDF, and local font assets only where they earn their cost.
+
+</RichText>
+
+<Callout id="architecture-decision" tone="decision">
+
+Use a multi-page static site. Four hand-authored HTML documents plus one privacy page are smaller and easier to operate than adding React, Astro, Jekyll, or a client-side router. Shared CSS owns the visual system; repeated header/footer markup is accepted at this scale.
+
+</Callout>
+
+<RichText id="acceptance">
+
+## Observable acceptance
+
+The redesign is complete when:
+
+- `index.html` communicates the target role, proof, and contact path within the first viewport.
+- Three case-study routes cover all four supplied repositories with verified problem, architecture, decisions, resilience, and outcome statements.
+- The visible experience list includes AwaLedger for April 2025–April 2026. The AI-4AI entry records April 2026–present but remains unpublished until explicitly enabled.
+- The layout works at 320px, 390px, 768px, 1024px, and 1440px without clipped text or horizontal page scrolling.
+- Keyboard users can reach every link in a visible order, focus is obvious, and reduced-motion users receive no nonessential animation.
+- GA4 receives page views, outbound source-link clicks, résumé downloads, and contact clicks only after analytics consent.
+- `https://uthmanallison.com` serves the site over HTTPS; `www` and `uthmanallison.github.io` converge on the chosen canonical domain.
+- Search Console verifies the domain, accepts `sitemap.xml`, and reports the four public content routes as indexable.
+- The repository's site check passes and Lighthouse mobile scores at least 90 Performance, 100 Accessibility, 95 Best Practices, and 100 SEO on the home page and one case study.
+
+## Explicit non-goals
+
+- No blog, CMS, admin panel, contact-form backend, newsletter, authentication, search, theme switcher, animated particle background, or résumé data pipeline.
+- No invented business metrics or claims that code alone cannot prove.
+- No migration away from GitHub Pages.
+- No attempt to guarantee a Google ranking position; the release creates sound technical and content foundations.
+
+</RichText>
+
+<Table
+  id="visual-tokens"
+  columns={["Token", "Value", "Role"]}
+  rows={[
+    ["Midnight", "#07111B", "Page background and browser chrome"],
+    ["Deep navy", "#0D1B2A", "Primary section surface"],
+    ["Slate", "#13263A", "Elevated details and code/diagram panels"],
+    ["Mist", "#F2F6FA", "Primary text"],
+    ["Steel", "#9FB0C1", "Secondary text"],
+    ["Warm brass", "#D5A54A", "Links, focus rings, and one primary action"],
+    ["Blue rule", "#27405A", "Borders and structural grid lines"],
+  ]}
+  density="compact"
+/>
+
+<RichText id="visual-direction">
+
+## Visual direction
+
+The portfolio should feel like a **systems casebook**, not a developer template or dashboard. Use an asymmetric hero, editorial project records separated by structural rules, and small architecture diagrams that explain invariants. Spend visual emphasis on the case-study system maps; keep the rest calm.
+
+Typography reuses the existing local assets: Raleway Semibold/Bold for headings and Lato Regular/Bold for prose. Body lines stay below 72 characters, headings use sentence case, and labels are not tracked-out all caps. The palette extends the current navy identity into a dark-only midnight/brass system rather than using the common black-and-neon developer aesthetic.
+
+Desktop uses a sticky full-width top bar and a 72rem content measure. Mobile keeps a visible two-link priority navigation instead of adding a hamburger and JavaScript. Project records change from a three-column row to a linear article; nothing is hidden at smaller widths.
+
+</RichText>
+
+<Table
+  id="information-architecture"
+  columns={["Route", "Primary job", "Core content"]}
+  rows={[
+    ["/", "Convert recruiter interest", "Positioning, three selected systems, concise experience, capabilities, contact"],
+    ["/work/job-search-agent/", "Show orchestration and production judgment", "Profile ingestion, provider search, filters, LangGraph, scoring, scheduling, email, privacy-safe observability"],
+    ["/work/offline-literacy-platform/", "Show offline/data correctness", "Version detection, delta manifests, stable IDs, idempotent progress push, authoritative pull, conflict rules"],
+    ["/work/awaledger/", "Show distributed financial/AI processing", "FastAPI domain backend, transactional outbox, Pub/Sub, Redis lock, Gemini extraction, secure idempotent webhooks"],
+    ["/privacy/", "Explain measurement plainly", "Analytics data collected, consent storage, retention/contact information"],
+  ]}
+  density="normal"
+/>
+
+<RichText id="case-study-content">
+
+## Case-study content grounded in the repositories
+
+### Job Search Agent
+
+**Problem:** Job discovery across multiple providers produces inconsistent data, duplicates, weak geographic fit, and expensive semantic evaluation. Multi-user schedules and notifications add ownership, retry, and privacy boundaries.
+
+**Story to publish:** A Python 3.13/FastAPI system that ingests résumé, website, and manual preferences into a versioned profile; queries SerpApi, Himalayas, Jooble, and Adzuna through bounded adapters; normalizes and deduplicates listings; applies deterministic hard filters before LLM scoring; runs one reusable LangGraph; persists explainable history in PostgreSQL; schedules work safely; and delivers idempotent Resend digests. Highlight privacy-projected LangSmith traces and per-run LLM cost ceilings as production judgment.
+
+**Architecture visual:** Inputs and versioned profile at the top; search/normalize/filter/score graph in the middle; PostgreSQL history, LangSmith traces, logs, and email outcomes as separate operational records.
+
+**Repository evidence:** `README.md`, `src/job_notifier/graph/graph.py`, `src/job_notifier/search/`, `src/job_notifier/scoring/`, `src/job_notifier/scheduling/`, `src/job_notifier/observability/`, `src/job_notifier/persistence/`.
+
+### AI-4AI Offline Literacy Platform
+
+**Problem:** Learners must consume course content and record progress when connectivity is absent or unreliable, then safely reconcile with authoritative server state across retries and devices.
+
+**Story to publish:** A NestJS 11/TypeScript backend for a Flutter learning app. The server owns published content versions, delta manifests, tombstones, stable content identities, idempotent outbox replay, and conflict resolution. Redis serves the hot content-version path; PostgreSQL holds durable state; S3-compatible storage supplies signed assets; Firebase/JWT guard users and admins. Show why content version and learner-state cursor are deliberately separate.
+
+**Architecture visual:** A two-lane online/offline sync: content version to manifest and verified asset download in one lane; progress outbox push, conflict merge, and authoritative pull in the other.
+
+**Repository evidence:** `openwiki/quickstart.md`, `openwiki/offline-first.md`, `docs/offline-first-architecture.md`, `src/modules/domain/content-version/`, `src/modules/domain/content-manifest/`, `src/modules/domain/user/sync-progress/`.
+
+### AwaLedger
+
+**Problem:** Financial document processing and AI classification are expensive and failure-prone; they must not block the transactional API or duplicate side effects when brokers retry delivery.
+
+**Story to publish:** One system spanning two repositories. The FastAPI backend uses clean architecture, PostgreSQL/SQLModel, OCR/storage adapters, an idempotency middleware, and a transactional outbox. It publishes financial-insight events to GCP Pub/Sub only after durable state exists. A detached Python worker validates each message, acquires a Redis distributed lock, uses Gemini 2.5 Flash Lite through LangChain for structured classifications and business insights, posts results through secure idempotent webhooks, and chooses ack/nack behavior by failure class. This page should make the boundary between transactional state and AI work visible.
+
+**Architecture visual:** User/document to FastAPI and PostgreSQL; outbox to Pub/Sub; worker to Redis and Gemini; signed webhook back to the API. Annotate delivery, locking, retry, and persistence boundaries.
+
+**Repository evidence:** `Backend-Repo/README.md`, `docs/background_tasks.md`, `src/infra/pubsub/outbox_dispatcher.py`, `financial-insights-worker/README.md`, `src/worker.py`, `src/insights/`.
+
+Each case study follows the same readable order: Overview, problem, constraints, architecture, key decisions, reliability/security, engineering outcomes, and what I would improve next. “Engineering outcomes” uses verifiable properties until user-supplied metrics are available.
+
+### Work-experience copy
+
+**AwaLedger — backend engineering, April 2025–April 2026.** Publish this entry. Describe responsibility for the FastAPI financial backend and its detached AI-processing path: clean architecture, PostgreSQL/SQLModel, transactional outbox delivery, GCP Pub/Sub, Redis duplicate locking, typed Gemini results, and secure idempotent callbacks. Keep the wording contribution-focused and omit unverified scale or commercial metrics.
+
+**AI-4AI — backend engineering, April 2026–present.** Prepare this entry from the offline-literacy repository but keep it disabled for launch. The copy may describe the NestJS backend, versioned content and delta manifests, tombstones, stable content IDs, idempotent progress push, authoritative pull, and separate content/learner-state cursors. A commented HTML entry is still visible in the public repository and page source, so keep the deferred copy in this local plan rather than shipping it inside `index.html`; enable it only when publication is approved.
+
+**Job Search Agent.** Treat this as a selected project, not employment. Use architecture and reliability outcomes only; no numeric impact claims are available.
+
+</RichText>
+
+<FileTree
+  id="file-map"
+  title="Target repository map"
+  entries={[
+    { path: "index.html", change: "modified", note: "Semantic hiring-focused home page and Person/WebSite JSON-LD" },
+    { path: "css/styles.css", change: "modified", note: "Replace bundled Bootstrap output with the complete dark token system, layout, components, print, and responsive rules" },
+    { path: "css/resume.min.css", change: "removed", note: "Unused duplicate stylesheet" },
+    { path: "js/scripts.js", change: "removed", note: "Bootstrap scrollspy, nav toggler, and scroll bar are no longer needed" },
+    { path: "js/analytics.js", change: "added", note: "Consent-gated GA4 loading and named click events" },
+    { path: "work/job-search-agent/index.html", change: "added", note: "Job Search Agent case study" },
+    { path: "work/offline-literacy-platform/index.html", change: "added", note: "Offline Literacy case study" },
+    { path: "work/awaledger/index.html", change: "added", note: "Combined AwaLedger backend + worker case study" },
+    { path: "privacy/index.html", change: "added", note: "Plain-language analytics and consent notice" },
+    { path: "assets/img/social-card.png", change: "added", note: "One 1200×630 social preview used consistently" },
+    { path: "robots.txt", change: "added", note: "Allow crawling and point to sitemap" },
+    { path: "sitemap.xml", change: "added", note: "Canonical public routes" },
+    { path: "CNAME", change: "added", note: "uthmanallison.com custom-domain binding" },
+    { path: ".nojekyll", change: "added", note: "Serve static files directly without Jekyll processing" },
+    { path: "scripts/check-site.sh", change: "added", note: "One dependency-free structural regression check" },
+  ]}
+/>
+
+<RichText id="task-1">
+
+## Task 1 — Establish the release check before replacing the page
+
+**Files:** create `scripts/check-site.sh`.
+
+**Produces:** one executable check that owns structural requirements for every public HTML page.
+
+- [ ] Write the shell check using `set -eu`, an explicit list of the five pages, `tidy -quiet -errors` for HTML, `xmllint --noout sitemap.xml`, and `rg` assertions for description, canonical, Open Graph title, one `h1`, a skip link, the analytics script, and forbidden legacy dependencies (`bootstrap`, `fontawesome`, `iconify`, `vendor/devicons`). Assert that `CNAME` contains exactly `uthmanallison.com`.
+- [ ] Run `rtk sh scripts/check-site.sh`; expected result: failure because the new routes and metadata do not exist yet.
+- [ ] Commit the failing acceptance check as `test: define portfolio release contract`.
+
+The check intentionally avoids npm, a test framework, and network calls. Browser behavior, analytics delivery, and DNS are proven by the release task because a shell parser cannot validate them honestly.
+
+</RichText>
+
+<RichText id="task-2">
+
+## Task 2 — Replace the résumé template with the dark systems casebook
+
+**Files:** modify `index.html` and `css/styles.css`; remove `css/resume.min.css` and `js/scripts.js` after the replacement renders.
+
+**Consumes:** palette, typography, information architecture, and case-study summaries in this plan.
+
+**Produces:** a no-JavaScript home experience with stable anchors `#work`, `#experience`, `#about`, and `#contact`.
+
+- [ ] Rewrite `index.html` with `header`, `nav`, `main`, `section`, `article`, and `footer`; add a visible-on-focus skip link and exactly one `h1`.
+- [ ] Use this approved positioning: “Backend engineer designing reliable systems for AI, finance, and offline learning.” Supporting copy: “I build APIs, asynchronous pipelines, and AI-assisted products that stay correct under retries, weak networks, and real-world constraints.”
+- [ ] Present three selected-work records in this order: Job Search Agent, Offline Literacy Platform, AwaLedger. Each record contains a two-sentence outcome, a short technology line, a case-study link, and an optional source link only when the repository is publicly accessible.
+- [ ] Reduce experience to current/relevant roles and move exhaustive history to the résumé PDF. Publish **AwaLedger — backend engineering, April 2025–April 2026** with concise repository-backed responsibilities. Keep the prepared **AI-4AI — backend engineering, April 2026–present** copy in this local plan and out of deployed HTML until explicitly enabled. Keep direct email, LinkedIn, GitHub, and résumé actions.
+- [ ] Replace the generated Bootstrap CSS with focused custom rules: the exact tokens above, `color-scheme: dark`, fluid type with `clamp()`, a 72rem container, CSS Grid/Flexbox, `:focus-visible`, `prefers-reduced-motion`, and print rules. Load only the existing local Raleway Semibold/Bold and Lato Regular/Bold files.
+- [ ] Use inline text or accessible inline SVG only where an icon materially improves recognition; remove Font Awesome, Iconify, Bootstrap JavaScript, the missing devicons stylesheet, Google Fonts, scrollspy, mobile-nav toggling, and the scroll progress indicator.
+- [ ] Render through `rtk python3 -m http.server 8000`, then inspect desktop and 390px mobile views before deleting the legacy CSS/JS files.
+- [ ] Run `rtk sh scripts/check-site.sh`; expected result: it still fails only for unfinished routes/SEO files.
+- [ ] Commit as `feat: redesign portfolio home page`.
+
+</RichText>
+
+<RichText id="task-3">
+
+## Task 3 — Publish the Job Search Agent case study
+
+**Files:** create `work/job-search-agent/index.html`; extend shared case-study rules in `css/styles.css` only when the home page does not already provide them.
+
+- [ ] Build the page with the common header/footer and sections: Overview, problem, system map, pipeline stages, production decisions, engineering outcomes, and improvements.
+- [ ] Describe the pipeline as profile ingestion → bounded query generation → provider search → normalization → deduplication → hard filtering → semantic scoring → deterministic ranking → persistence → idempotent notification.
+- [ ] Explain four decisions with file-backed evidence: deterministic filters before LLM cost, run-scoped artifacts instead of large graph state, a single correlation ID across database/logs/traces, and persist-before-send notification idempotency.
+- [ ] Use qualitative engineering outcomes only; do not add traffic, conversion, placement, time-saved, or other numeric impact claims without later evidence.
+- [ ] Include a responsive semantic architecture diagram; add text alternatives that communicate the same relationships.
+- [ ] Link `https://github.com/alliwene/job-search-agent` only if it is publicly reachable at release time.
+- [ ] Run the site check plus a keyboard/mobile smoke of this page.
+- [ ] Commit as `feat: add job search agent case study`.
+
+</RichText>
+
+<RichText id="task-4">
+
+## Task 4 — Publish the Offline Literacy case study
+
+**Files:** create `work/offline-literacy-platform/index.html`; reuse `css/styles.css`.
+
+- [ ] Build the page with Overview, connectivity problem, responsibility split, content synchronization, progress synchronization, conflict/idempotency rules, engineering outcomes, and improvements.
+- [ ] Make the two-cursor invariant explicit: content version controls published learning assets; server `updated_at` controls learner-state changes. Do not imply they are interchangeable.
+- [ ] Show the full/delta manifest behavior, tombstones, checksums, stable content identities, outbox event IDs, monotonic completion, server-wins conflicts, and push-then-pull client order.
+- [ ] Include a two-lane semantic diagram for content and progress sync, with equivalent text for assistive technology.
+- [ ] Name AI-4AI publicly. Link `https://github.com/AI-4AI/offline_literacy_be` only if the repository is publicly reachable at release time.
+- [ ] Run the site check plus a keyboard/mobile smoke of this page.
+- [ ] Commit as `feat: add offline literacy case study`.
+
+</RichText>
+
+<RichText id="task-5">
+
+## Task 5 — Publish AwaLedger as one distributed-system case study
+
+**Files:** create `work/awaledger/index.html`; reuse `css/styles.css`.
+
+- [ ] Present the FastAPI backend and financial-insights worker as two deployable components connected by a durable message contract, not as unrelated projects.
+- [ ] Explain the request path: document confirmation persists state and outbox event; dispatcher claims and publishes to Pub/Sub; worker validates and locks by event ID; Gemini returns typed classifications; secure webhook persists results; ack/nack follows failure class.
+- [ ] Highlight transactional outbox retry/backoff, Pub/Sub ordering by source, Redis duplicate suppression, structured Pydantic output, best-effort categorized insights, bounded webhook retries, and webhook idempotency.
+- [ ] Include a system-boundary diagram with separate transaction, delivery, AI, and callback trust boundaries. Never expose sample financial data or secret/header values.
+- [ ] Name AwaLedger publicly. Link its two repositories only if they are publicly reachable; otherwise omit source actions without anonymizing the product.
+- [ ] Run the site check plus a keyboard/mobile smoke of this page.
+- [ ] Commit as `feat: add awaledger system case study`.
+
+</RichText>
+
+<RichText id="task-6">
+
+## Task 6 — Add complete technical SEO and social metadata
+
+**Files:** modify all four content pages; create `assets/img/social-card.png`, `robots.txt`, `sitemap.xml`, `CNAME`, and `.nojekyll`.
+
+- [ ] Use exact canonical routes under `https://uthmanallison.com`; add unique 50–60 character titles and 140–160 character descriptions, Open Graph/Twitter fields, the shared 1200×630 social card, and `theme-color: #07111B`.
+- [ ] Add `Person` and `WebSite` JSON-LD on the home page using **Abiodun Uthman Allison** as the canonical name, `Uthman Allison` as the alternate/display name where supported, the canonical URL, image, job title, and same-as profiles. Do not add unsupported ratings, employers, awards, or fabricated rich-result fields.
+- [ ] Create the social card from the portrait, name, role, and midnight/brass tokens; export as an optimized PNG below 300KB with useful alt-equivalent metadata in the pages.
+- [ ] Create `robots.txt` with `User-agent: *`, `Allow: /`, and `Sitemap: https://uthmanallison.com/sitemap.xml`.
+- [ ] Create `sitemap.xml` containing `/`, the three case studies, and `/privacy/`, each with canonical HTTPS URLs and truthful `lastmod` dates from the implementation commit.
+- [ ] Add `CNAME` containing exactly `uthmanallison.com` and an empty `.nojekyll`.
+- [ ] Run `rtk sh scripts/check-site.sh`; expected result: only the unfinished privacy/analytics assertions fail.
+- [ ] Commit as `feat: add portfolio search metadata`.
+
+</RichText>
+
+<RichText id="task-7">
+
+## Task 7 — Add consent-gated GA4 measurement
+
+**Files:** create `js/analytics.js` and `privacy/index.html`; modify every page to include the consent surface, script, and analytics attributes.
+
+- [ ] Configure the existing GA4 web stream with measurement ID **`G-VWG0C7WTQ4`**. The ID is public configuration, not a secret; keep it as the single measurement ID across all pages.
+- [ ] In `js/analytics.js`, default `analytics_storage` to `denied`, read the visitor's saved `localStorage` choice, load `gtag.js` only after consent, and expose Accept and Decline actions with persistent, keyboard-operable status.
+- [ ] Use one delegated click listener for `data-analytics-event` elements. Send only `project_open`, `source_open`, `resume_download`, and `contact_click` with a short non-personal label; never send email addresses, URL query strings, résumé content, or project data.
+- [ ] Keep the page fully functional when the script is blocked, consent is declined, local storage is unavailable, or GA fails to load.
+- [ ] Publish `/privacy/` explaining the event names, Google as processor, consent storage, how to withdraw consent, and the contact method. Set a conservative GA retention period in the GA admin console.
+- [ ] Verify one page view and each named event in GA4 DebugView after granting consent; verify zero GA requests before consent and after decline.
+- [ ] Run `rtk sh scripts/check-site.sh`; expected result: pass.
+- [ ] Commit as `feat: add privacy-aware portfolio analytics`.
+
+</RichText>
+
+<RichText id="task-8">
+
+## Task 8 — Release, connect the domain, and prove the public path
+
+**Files:** no new source files unless verification exposes a defect.
+
+- [ ] Run `rtk sh scripts/check-site.sh` from a clean checkout and serve locally with `rtk python3 -m http.server 8000`.
+- [ ] Test keyboard-only navigation, focus order, skip link, consent actions, case-study links, résumé download, and contact links at 320px, 390px, 768px, 1024px, and 1440px. Test with JavaScript disabled and `prefers-reduced-motion: reduce`.
+- [ ] Run Lighthouse mobile on `/` and `/work/awaledger/`; meet the acceptance thresholds or record the exact remaining external limitation before release.
+- [ ] Push the approved commits to `main`; in GitHub **Settings → Pages**, set `uthmanallison.com` and leave branch/root deployment enabled.
+- [ ] At the registrar, preserve MX and unrelated TXT records, remove only conflicting apex/web records, add apex A records `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`, and set `www` CNAME to `uthmanallison.github.io`.
+- [ ] Add GitHub's domain-verification TXT record, wait for Pages to provision TLS, then enable **Enforce HTTPS**.
+- [ ] Verify apex and `www` behavior, canonical tags, certificate validity, each case-study 200 response, `robots.txt`, and `sitemap.xml`. Confirm `uthmanallison.github.io` does not create a competing indexable copy.
+- [ ] Verify `uthmanallison.com` in Search Console with DNS, submit `/sitemap.xml`, inspect the home page plus each case study, and request indexing after the canonical domain is live.
+- [ ] Check GA4 Realtime on the canonical domain and annotate the launch date so future traffic comparisons have a baseline.
+- [ ] Commit only source corrections discovered during the release as `fix: complete portfolio release verification`.
+
+</RichText>
+
+<Callout id="known-risk" tone="risk">
+
+The repositories and supplied dates prove architecture, implementation context, and employment periods, but not Abiodun Uthman Allison's exact ownership percentage, team size, production traffic, latency improvement, revenue impact, or permission to publish employer screenshots. Launch copy must stay at the engineering-outcome level until those facts are supplied and approved.
+
+</Callout>
+
+<Callout id="launch-inputs" tone="decision">
+
+Launch inputs are settled: the canonical identity is **Abiodun Uthman Allison** with **Uthman Allison** available as the compact display name; AwaLedger and AI-4AI may be named publicly; AwaLedger is dated April 2025–April 2026; AI-4AI is dated April 2026–present but remains unpublished; Job Search Agent uses no numeric impact claims; and GA4 uses **`G-VWG0C7WTQ4`**.
+
+</Callout>

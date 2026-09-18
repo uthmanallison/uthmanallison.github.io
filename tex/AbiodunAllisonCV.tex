@@ -33,7 +33,8 @@
 
 \namesection{Abiodun Uthman}{Allison}{ % Your name profile or other web address
 Lagos, Nigeria \\
-\href{https://uthmanallison.github.io}{\bf https://uthmanallison.github.io} \\
+Backend \& AI Engineer \\
+\href{https://uthmanallison.com}{\bf uthmanallison.com} \\
 \href{mailto:allisonabiodun@gmail.com}{allisonabiodun@gmail.com} %| +234.703.815.1040 
 % \href{https://github.com/alliwene/msc-project}{\bf GitHub} || \href{https://github.com/alliwene/msc-project}{\bf GitHub} ||
 % \href{https://github.com/alliwene/msc-project}{\bf GitHub} ||
@@ -52,7 +53,7 @@ Lagos, Nigeria \\
 %------------------------------------------------
 
 \section{Links} 
-% Homepage: \href{https://uthmanallison.github.io}{\bf uthmanallison.github.io} \\
+% Homepage: \href{https://uthmanallison.com}{\bf uthmanallison.com} \\
 Github: \href{https://github.com/alliwene}{\bf github.com/alliwene} \\
 LinkedIn: \href{https://www.linkedin.com/in/uthmanallison}{\bf linkedin.com/in/uthmanallison} \\
 % Zindi: \href{https://zindi.africa/users/alliwene}{\bf zindi.africa/users/alliwene} \\
@@ -71,15 +72,17 @@ LinkedIn: \href{https://www.linkedin.com/in/uthmanallison}{\bf linkedin.com/in/u
 \subsection{Technical}
 Python \\
 TypeScript \\
-Finetuning LLMs \\
-AI Agents \\
-Software Design \\
 SQL \\
-Bash shell scripting \\
-Node.js \\
+FastAPI \\
 NestJS \\
-REST API development \\
-Redis
+Node.js \\
+REST APIs \\
+PostgreSQL \\
+Redis \\
+LangGraph \\
+LangChain \\
+RAG \& AI agents \\
+LLM fine-tuning
 
 \sectionspace % Some white space after the section
 
@@ -109,12 +112,11 @@ Redis
 \sectionspace % Some white space after the section
 
 \subsection{Software}
-TensorFlow \\
-Pytorch \\
-LangGraph \\
-Git and Github \\
+AWS \\
 Docker \\
-Jira \\
+Git and GitHub \\
+TensorFlow \\
+PyTorch \\
 % , Keras, 
 
 
@@ -179,21 +181,51 @@ Dissertation: \href{https://github.com/alliwene/msc-project}{\bf Optimizing Deep
 
 \section{Experience}
 
+\runsubsection{Awaledger}
+\descript{| Backend Engineer}
+
+\location{April 2025 – April 2026 | Remote}
+\vspace{\topsep} % Hacky fix for awkward extra vertical space
+\begin{tightitemize}
+  \item Built FastAPI services that convert handwritten records into structured ledgers using Google Cloud Vision OCR and LangChain with OpenAI models.
+  \item Designed asynchronous PostgreSQL, Redis, and Pub/Sub workflows; secured and operated them with OAuth2, JWT, signed URLs, Alembic migrations, structured logging, and pytest.
+  % \item Delivering AI-powered financial insights: classifications, trends, anomaly flags—via Google Pub/Sub streaming with PostgreSQL persistence and Redis caching.
+  % \item Engineering a scalable FastAPI backend (hexagonal architecture), implementing async PostgreSQL with SQLAlchemy/SQLModel and asyncpg, and validating data with Pydantic + OpenAPI.
+  % \item Hardening identity and data by enforcing OAuth2, JWT (PyJWT), and bcrypt; handling email verification and password resets with itsdangerous + FastAPI-Mail; guarding APIs with SlowAPI rate limits, CORS, and Google Cloud Storage V4 signed URLs.
+  % \item Designing a simplified, low-friction UX for digitally marginalized users, single-tap uploads and flows in plain language, integrating Google Cloud Storage and upload size guards through middleware.
+  % \item Operationalizing delivery with Docker containers, Alembic migrations, structured logging (Loguru, Better Stack), and pytest-based test coverage.
+\end{tightitemize}
+
+\sectionspace % Some white space after the section
+
+%------------------------------------------------
+
+% \runsubsection{AI-4AI}
+% \descript{| Backend Engineer}
+
+% \location{April 2026 – Present | Remote}
+% \vspace{\topsep} % Hacky fix for awkward extra vertical space
+% \begin{tightitemize}
+%   \item Developing the NestJS and TypeScript backend for an offline-first AI literacy platform covering course delivery, enrollment, assessments, and learner progress.
+%   \item Designing PostgreSQL and TypeORM data models and versioned migrations for content publishing, stable assessment identity, and reliable progress synchronization.
+%   \item Integrating Firebase authentication, S3-compatible object storage, Resend email delivery, and Bull/Redis background jobs.
+%   \item Improving production reliability with Vitest coverage, OpenTelemetry tracing, health checks, CI workflows, and migration-driven Railway deployments.
+% \end{tightitemize}
+
+% \sectionspace % Some white space after the section
+
+%------------------------------------------------
+
 \runsubsection{Tog Lab}
-\descript{| Back-end Engineer}
+\descript{| Backend Engineer}
 
 \location{August 2022 – March 2025 | Remote}
 \vspace{\topsep} % Hacky fix for awkward extra vertical space
 \begin{tightitemize}
-  \item Architected and maintained scalable NestJS microservices.
-  \item Implemented authentication and authorization workflows using AWS Cognito.
-  \item Modeled relational schemas and performed data access management with Prisma.
-  \item Developed a RAG-based chatbot that utilizes LangChain, TypeScript, React / Next.js, and the corporate website as a knowledge base.
-  \item Integrated Redis for session management and chat history persistence.
-  \item Engineered a multi-agent conversational AI pipeline with Flowise AI and Pinecone vector store.
-  \item Automated document ingestion and vectorization via Python scripts using Unstructured and LangChain.
-  \item Deployed serverless handlers on AWS Lambda triggered by S3 events.
-  \item Built CI/CD pipelines with AWS CodePipeline and defined the infrastructure as code in AWS CDK.
+  \item Architected and maintained NestJS microservices backed by Prisma-managed relational schemas and Redis-based session and chat persistence.
+  \item Implemented authentication with AWS Cognito and event-driven handlers with AWS Lambda and S3, then automated delivery through AWS CodePipeline and AWS CDK.
+  \item Built a RAG chatbot using LangChain, TypeScript, React/Next.js, and company content as the knowledge base.
+  \item Engineered a multi-agent conversational AI workflow using Flowise AI and Pinecone, with Python ingestion pipelines built on Unstructured and LangChain.
 \end{tightitemize}
 
 \sectionspace % Some white space after the section
@@ -223,8 +255,8 @@ Dissertation: \href{https://github.com/alliwene/msc-project}{\bf Optimizing Deep
 \location{June 2022 – September 2022 | Remote}
 \vspace{\topsep} % Hacky fix for awkward extra vertical space
 \begin{tightitemize}
-\item Instructed students on AWS core services—including compute, storage, networking, security, and databases—to prepare them for the AWS Cloud Practitioner exam.
-\item Hands-on sessions were led using both the AWS console and the command line interface to reinforce practical skills.
+\item Taught AWS compute, storage, networking, security, and database services to learners preparing for the AWS Cloud Practitioner examination.
+\item Led hands-on labs through the AWS Management Console and command-line interface to reinforce practical cloud skills.
 \end{tightitemize}
 
 \sectionspace % Some white space after the section
@@ -272,8 +304,8 @@ Dissertation: \href{https://github.com/alliwene/msc-project}{\bf Optimizing Deep
 \descript{| Machine Learning Engineer Intern}
 \location{Aug. 2020 – Oct. 2020 | Remote}
 \begin{tightitemize}
-\item Annotated farmland boundaries using geospatial imagery on Google Earth during the data collection phase for an automatic farm boundary detection project.
-\item Executed a satellite imagery preprocessing workflow as part of a computer vision team using Python. The processed images were used to feed a convolutional neural network model to digitally map key soil nutrients.
+\item Annotated farmland boundaries from geospatial imagery in Google Earth for an automated farm-boundary detection project.
+\item Built Python preprocessing workflows for satellite imagery used by a convolutional neural network to map key soil nutrients.
 \end{tightitemize}
 \sectionspace % Some white space after the section
 
